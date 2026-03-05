@@ -38,7 +38,7 @@ A machine learning application that analyzes Twitter sentiment and classifies tw
 
 ## 🌐 Live Demo
 
-Check out the live application: **[Twitter Sentiment Analysis App](https://your-app-url.streamlit.app)**
+Check out the live application: **[Twitter Sentiment Analysis App](https://twitter-sentiment-analysis-4rqbmaw8d3cstfqzjplf2s.streamlit.app/)**
 
 ---
 
