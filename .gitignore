@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Data (don't upload large datasets)
+data/raw/*
+data/processed/*
+!data/.gitkeep
+
+# Models (optional - can retrain on cloud)
+models/*.pkl
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
