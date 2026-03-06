@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 import os
-
+from transformers import pipeline  
 # Page config
 st.set_page_config(
     page_title="Twitter Sentiment Analysis",
@@ -19,6 +19,17 @@ def load_models():
     return model, vectorizer, class_mapping
 
 model, vectorizer, class_mapping = load_models()
+# Load BERT model for higher accuracy
+@st.cache_resource
+def load_bert_model():
+    """Load BERT transformer model for sentiment analysis"""
+    classifier = pipeline(
+        "sentiment-analysis",
+        model="cardiffnlp/twitter-roberta-base-sentiment"
+    )
+    return classifier
+
+bert_classifier = load_bert_model()
 
 # Title
 st.title("🐦 Twitter Sentiment Analysis")
@@ -31,8 +42,23 @@ option = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
+st.sidebar.header("🤖 Model Selection")
+model_choice = st.sidebar.selectbox(
+    "Choose Model:",
+    ["⚡ Fast (Logistic Regression)", "🎯 Accurate (BERT)"]
+)
+
+st.sidebar.markdown("---")
 st.sidebar.markdown("**Model Info:**")
-st.sidebar.info("- Logistic Regression + TF-IDF\n- Accuracy: ~76.5%")
+if "Fast" in model_choice:
+    st.sidebar.info("- Logistic Regression + TF-IDF\n- Accuracy: ~76.5%\n- Speed: Instant")
+else:
+    st.sidebar.info("- BERT Transformer\n- Accuracy: ~85-90%\n- Speed: 2-3 seconds")
+        # Debug: Show BERT output
+    if st.sidebar.button("🔍 Test BERT"):
+        test_result = bert_classifier("I love this!")
+        st.sidebar.write(f"BERT Output: {test_result}")
+
 
 # Single Tweet Analysis
 if option == "Single Tweet":
@@ -48,18 +74,33 @@ if option == "Single Tweet":
     # Analyze button
     if st.button("Analyze Sentiment", type="primary"):
         if tweet_input.strip():
-            # Predict
-            vector = vectorizer.transform([tweet_input])
-            prediction = model.predict(vector)[0]
-            probabilities = model.predict_proba(vector)[0]
-            
-            # Get sentiment label
-            sentiment = class_mapping[prediction]
-            confidence = probabilities[prediction] * 100
+            with st.spinner("Analyzing..."):
+                # Predict based on model choice
+                if "Fast" in model_choice:
+                    # Logistic Regression
+                    vector = vectorizer.transform([tweet_input])
+                    prediction = model.predict(vector)[0]
+                    probabilities = model.predict_proba(vector)[0]
+                    sentiment = class_mapping[prediction]
+                    confidence = probabilities[prediction] * 100
+                else:
+                    # BERT Model
+                    result = bert_classifier(tweet_input)[0]
+                    confidence = result['score'] * 100
+                    
+                    # Map BERT labels
+                    sentiment_raw = result['label']
+                    if 'NEG' in sentiment_raw or sentiment_raw == 'LABEL_0':
+                        sentiment = 'Negative'
+                    elif 'POS' in sentiment_raw or sentiment_raw == 'LABEL_2':
+                        sentiment = 'Positive'
+                    else:
+                        sentiment = 'Neutral'
+                    probabilities = [1 - confidence/100, confidence/100]
             
             # Display result
             col1, col2 = st.columns(2)
-            
+
             with col1:
                 st.subheader("📊 Result")
                 if sentiment == 'Positive':
@@ -67,12 +108,16 @@ if option == "Single Tweet":
                 else:
                     st.error(f"**Sentiment:** {sentiment} ❌")
                 st.write(f"**Confidence:** {confidence:.2f}%")
-            
+
             with col2:
                 st.subheader("📈 Probabilities")
-                st.metric("Negative", f"{probabilities[0]*100:.2f}%")
-                st.metric("Positive", f"{probabilities[1]*100:.2f}%")
-            
+                if "Fast" in model_choice:
+                    st.metric("Negative", f"{probabilities[0]*100:.2f}%")
+                    st.metric("Positive", f"{probabilities[1]*100:.2f}%")
+                else:
+                    st.metric("Negative", f"{100 - confidence:.2f}%")
+                    st.metric("Positive", f"{confidence:.2f}%")
+
             # Progress bar
             st.subheader("Confidence Level")
             st.progress(confidence / 100)
