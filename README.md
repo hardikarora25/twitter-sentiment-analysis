@@ -149,9 +149,8 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 
 📫 Connect with Me
 GitHub: @hardikarora25
-LinkedIn: Add your LinkedIn
-Twitter: Add your Twitter
-Email: add-your-email@example.com
+LinkedIn: linkedin.com/in/hardik-arora-582542283
+Email: hardikarora5000@gmail.com
 <div align=“center”>
 
 Made with ❤️ by Hardik Arora
