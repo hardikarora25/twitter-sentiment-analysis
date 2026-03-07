@@ -54,8 +54,8 @@ Check out the live application: **[Twitter Sentiment Analysis App](https://twitt
 | **Web Framework** | Streamlit |
 | **Model** | Logistic Regression + TF-IDF |
 
----
-'''
+
+```
 ## 📁 Project Structure
 
 twitter-sentiment-analysis/
@@ -75,9 +75,9 @@ twitter-sentiment-analysis/
 │ └── 02_model_training.ipynb # Model training notebook
 └── src/
 └── predict.py # Prediction script
+```
 
-'''
----
+
 
 ## 📦 Installation
 
