@@ -54,10 +54,10 @@ Check out the live application: **[Twitter Sentiment Analysis App](https://twitt
 | **Web Framework** | Streamlit |
 | **Model** | Logistic Regression + TF-IDF |
 
+---
 
-```
 ## 📁 Project Structure
-
+```
 twitter-sentiment-analysis/
 ├── app.py # Streamlit web application
 ├── requirements.txt # Python dependencies
@@ -76,7 +76,7 @@ twitter-sentiment-analysis/
 └── src/
 └── predict.py # Prediction script
 ```
-
+---
 
 
 ## 📦 Installation
